@@ -33,7 +33,7 @@ void AbstractEntity::remove(std::string cpt) {
 
 void AbstractEntity::clear() {
 	for (auto iter=components.begin(); iter!=components.end(); iter++) {
-		remove(second);
+		remove((*iter).second);
 	}
 	components.clear();
 }
