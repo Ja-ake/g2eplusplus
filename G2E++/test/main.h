@@ -11,13 +11,12 @@
 #include <gl3w.h>
 #include <glcorearb.h>
 
-#include "../engine/math/vector2.h"
-#include "../engine/math/vector3.h"
-#include "../engine/gl/mesh.h"
-
 #include <iostream>
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
+#include "../g2e/gl/Mesh.h"
+#include "../g2e/math/Vector2.h"
+#include "../g2e/math/Vector3.h"
 
 #endif /* MAIN_H_ */

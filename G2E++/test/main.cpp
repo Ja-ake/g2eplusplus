@@ -363,9 +363,28 @@ GLuint initializeProgram() {
 
 ///
 
-int something(int arg, ...) { cout << sizeof(arg) << endl; return 4; }
+//class I {
+//public:
+//	virtual ~I() {}
+//	virtual void getI() { int kk = 4; }
+//	virtual long long getK() { return kk; }
+//private:
+//	long long kk = 400;
+//};
+//
+//class J : public I {
+//public:
+//	virtual ~J() {}
+//	virtual void getI() { int kk=0; }
+//};
+//
+//class K : public J {
+//public:
+//	virtual ~K() {}
+//	virtual void getI() { int kk=0; }
+//};
 
-int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+int WINAPI WinaMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		LPSTR lpCmdLine, int nCmdShow) {
 	try {
 	MSG msg;
@@ -378,6 +397,15 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		return 1;
 	}
 
+//	int* iptr = (int*)new I();
+//	int* jptr = (int*)new J();
+//	int* kptr = (int*)new K();
+//
+//	cout << sizeof(*iptr) << " " << sizeof(*jptr) << std::endl;
+//	cout << iptr[0] << " " << iptr[1] << std::endl;
+//	cout << jptr[0] << " " << jptr[1] << std::endl;
+//	cout << kptr[0] << " " << kptr[1] <<std::endl;
+
 	Mesh mesh = Mesh(36);
 //	mesh.vertex(1.0, 0.0,   -1.0f);
 //	mesh.vertex(0.0, 1.0,   -0.0f);
@@ -386,12 +414,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 //	mesh.vertex(2100.2, 0.0, 10);
 //	mesh.vertex(-240.2, -200, -10);
 
-
-	GLuint vbuffer;
-	unsigned int size = 36;
-	// Our vertices. Tree consecutive floats give a 3D vertex; Three consecutive vertices give a triangle.
-	// A cube has 6 faces with 2 triangles each, so this makes 6*2=12 triangles, and 12*3 vertices
-//	static const float vertices[] = {
 	    mesh.vertex(-0.9f,-0.9f,-1.1f);
 	    mesh.vertex(-0.9f,-0.9f, 1.1f);
 	    mesh.vertex(-0.9f, 0.9f, 1.1f);
@@ -440,7 +462,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 //	glBindBuffer(GL_ARRAY_BUFFER, 0);
 //
 //	GLuint program = initializeProgram();
-
+	double tick = 0, old = 0;
 	while (!done) {
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 			if (msg.message == WM_QUIT) {
@@ -457,17 +479,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 				} else {
 					draw();
 					mesh.render();
-
-//						glUseProgram(program);
-//
-//						glBindBuffer(GL_ARRAY_BUFFER, vbuffer);
-//						glEnableVertexAttribArray(0);
-//						glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-//
-//						glDrawArrays(GL_TRIANGLES, 0, 3*12);
-//
-//						glDisableVertexAttribArray(0);
-//						glUseProgram(0);
+					tick = (double)GetTickCount();
+//					cout << (1.0f/((tick-old)/1000.0f)) << endl;
+					old = tick;
 
 					SwapBuffers(hDC);
 				}
