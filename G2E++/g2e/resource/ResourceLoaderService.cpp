@@ -18,7 +18,7 @@ const char* ResourceLoaderService::loadFile(string path) {
 
 	try {
 		file.open((resourcefolder + path).c_str());
-		int cnt;
+		int cnt = 0;
 		while (!file.eof()) {
 			file.get();
 			++cnt;
@@ -30,7 +30,8 @@ const char* ResourceLoaderService::loadFile(string path) {
 			if (!file.eof()) data[i] = file.get();
 			else break;
 		}
-		//data[cnt] = '\0';
+		data[cnt-1] = '\0';
+
 		file.close();
 		return (const char*) data;
 	} catch (...) {

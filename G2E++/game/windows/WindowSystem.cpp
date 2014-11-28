@@ -27,6 +27,8 @@ void WindowSystem::initialize() {
 void WindowSystem::update(AbstractEntity* entity) {
 	SwapBuffers(((WindowComponent*)(dynamic_cast<AbstractEntity*> (entity)
 			->get("WindowComponent")))->hDC);
+	glClear(GL_COLOR_BUFFER_BIT);
+	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
 }
 
 void WindowSystem::update() {

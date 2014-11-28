@@ -3,6 +3,8 @@
 #include <g2e/service/servicelocator.h>
 #include <g2e/resource/resourceloaderservice.h>
 
+#include <iostream>
+
 using g2e::Core;
 using g2e::io::ResourceLoaderService;
 
@@ -27,7 +29,6 @@ OpenGLService::~OpenGLService() {
 
 opengl_buffers OpenGLService::upload(double* data, int size, GLuint type) {
 	opengl_buffers buffers;
-	buffer_map[*((long long*)&buffers)] = size;
 
 	glGenVertexArrays(1, &(buffers.vao));
 	glGenBuffers(1, &(buffers.vbo));
@@ -38,6 +39,8 @@ opengl_buffers OpenGLService::upload(double* data, int size, GLuint type) {
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
+	buffer_map[buffers.vbo] = size;
+
 	return buffers;
 }
 
@@ -47,7 +50,7 @@ void OpenGLService::draw(opengl_buffers& buffers) {
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_DOUBLE, GL_FALSE, 0, 0);
 
-	glDrawArrays(GL_TRIANGLES, 0, buffer_map[*((long long*)&buffers)]);
+	glDrawArrays(GL_TRIANGLES, 0, buffer_map[buffers.vbo]);
 
 	glDisableVertexAttribArray(0);
 }
@@ -70,6 +73,57 @@ opengl_program OpenGLService::createProgram(std::string vert, std::string frag) 
 
 	GLuint fragshader = glCreateShader(GL_FRAGMENT_SHADER);
 	const char* fstrFileData = resources->loadFile(frag);
+	glShaderSource(fragshader, 1, &fstrFileData, NULL);
+	glCompileShader(fragshader);
+
+	glGetShaderiv(fragshader, GL_COMPILE_STATUS, &status);
+	if (status == GL_FALSE) std::cerr << "Error creating shader" << std::endl;
+
+	// program
+
+	GLuint program = glCreateProgram();
+
+	glAttachShader(program, vertshader); // vertex
+	glAttachShader(program, fragshader); // fragment
+
+	glLinkProgram(program);
+
+	glGetProgramiv(program, GL_LINK_STATUS, &status);
+	if (status == GL_FALSE) {
+		GLint infoLogLength;
+		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &infoLogLength);
+
+		GLchar *strInfoLog = new GLchar[infoLogLength + 1];
+		glGetProgramInfoLog(program, infoLogLength, NULL, strInfoLog);
+		delete[] strInfoLog;
+
+		std::cerr << "Error creating program" << std::endl;
+	}
+
+	glDetachShader(program, fragshader); // fragment
+	glDetachShader(program, vertshader); // vertex
+
+	return program;
+}
+
+opengl_program OpenGLService::createProgramSrc(const char* vert, const char* frag) {
+	ResourceLoaderService* resources = (ResourceLoaderService*) Core::service().get("ResourceLoaderService");
+
+	// vertex
+
+	GLuint vertshader = glCreateShader(GL_VERTEX_SHADER);
+	const char *vstrFileData = vert;
+	glShaderSource(vertshader, 1, &vstrFileData, NULL);
+	glCompileShader(vertshader);
+
+	GLint status;
+	glGetShaderiv(vertshader, GL_COMPILE_STATUS, &status);
+	if (status == GL_FALSE) std::cerr << "Error creating shader" << std::endl;
+
+	// fragment
+
+	GLuint fragshader = glCreateShader(GL_FRAGMENT_SHADER);
+	const char* fstrFileData = frag;
 	glShaderSource(fragshader, 1, &fstrFileData, NULL);
 	glCompileShader(fragshader);
 

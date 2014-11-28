@@ -1,6 +1,8 @@
 #ifndef GL_OPENGLSERVICE_H_
 #define GL_OPENGLSERVICE_H_
 
+#define GLSL(src) "#version 150 core\n" #src
+
 #include <gl3w.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -30,6 +32,7 @@ public:
 	void draw(opengl_buffers& buffers);
 
 	opengl_program createProgram(std::string vert, std::string frag);
+	opengl_program createProgramSrc(const char* vert, const char* frag);
 	void useProgram(opengl_program program);
 	void unuseProgram();
 

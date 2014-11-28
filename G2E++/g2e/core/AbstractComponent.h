@@ -20,7 +20,7 @@ public:
 	AbstractComponent();
 	virtual ~AbstractComponent();
 
-	virtual void initialize()=0;
+	virtual void initialize() {}
 };
 
 } /* namespace g2e */

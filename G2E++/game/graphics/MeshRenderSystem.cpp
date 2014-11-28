@@ -2,6 +2,7 @@
 #include "meshcomponent.h"
 
 #include <glcorearb.h>
+#include <iostream>
 
 #include <g2e/gl/openglservice.h>
 #include <g2e/core/core.h>

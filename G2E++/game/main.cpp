@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <vector>
 #include <algorithm>
+#include <random>
 
 #include "../g2e/core/Core.h"
 #include "../g2e/gl/Mesh.h"
@@ -24,12 +25,15 @@ using std::endl;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 		LPSTR lpCmdLine, int nCmdShow) {
+	rand();
+
 	Core::addDefaultServices();
 
 	Core::add(new WindowSystem());
 	Core::get("WindowSystem")->add(new Window(nullptr, 1200, 900, "Game", false));
 
 	Core::add(new MeshRenderSystem());
+	Core::get("MeshRenderSystem")->add(new Triangle());
 	Core::get("MeshRenderSystem")->add(new Triangle());
 
 	Core::run();
