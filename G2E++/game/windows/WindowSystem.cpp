@@ -1,13 +1,21 @@
 #include "windowsystem.h"
 #include "window.h"
-#include "g2e/core/core.h"
+
+#include <windowsx.h>
+
+#include <g2e/core/core.h>
 #include <g2e/core/abstractentity.h>
 #include <g2e/resource/resourceloaderservice.h>
-#include "gl3w.h"
+#include <g2e/gl/openglservice.h>
+#include <g2e/event/eventservice.h>
+#include <g2e/event/user/mouseevent.h>
+#include <g2e/event/user/keyboardevent.h>
+#include <gl3w.h>
 #include <iostream>
 
 using g2e::Core;
 using g2e::AbstractEntity;
+using g2e::gl::OpenGLService;
 
 WindowSystem::WindowSystem() {
 }
@@ -18,17 +26,32 @@ WindowSystem::~WindowSystem() {
 void WindowSystem::initialize(AbstractEntity* entity) {
 	AbstractEntity* window = dynamic_cast<AbstractEntity*> (entity);
 	createWindow((WindowComponent*)window->get("WindowComponent"), 32, false);
+
+	glEnable(GL_DEPTH_TEST);
+
+	glm::mat4 projectionMatrix = glm::perspective(45.0f,
+			(float) 1200 / (float) 900, 1.0f, 200.0f);
+	glm::mat4 viewMatrix = glm::lookAt(	glm::vec3(50, 0, 0),
+										glm::vec3(0, 0, 0),
+										glm::vec3(0, 1, 0));
+
+	OpenGLService* opengl = (OpenGLService*) Core::service().get("OpenGLService");
+	opengl->setProjection(projectionMatrix);
+	opengl->setView(viewMatrix);
 }
 
 void WindowSystem::initialize() {
 
 }
 
+//double i = 0.49;
 void WindowSystem::update(AbstractEntity* entity) {
 	SwapBuffers(((WindowComponent*)(dynamic_cast<AbstractEntity*> (entity)
 			->get("WindowComponent")))->hDC);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClearColor(0.75f, 0.75f, 1.0f, 1.0f);
+//	glClearColor(fmod(i, 1), 0.0f, 0.0f, 1.0f);
+//	if (i<=0.5) i= 0.6; else i=0.49f;
 }
 
 void WindowSystem::update() {
@@ -78,8 +101,8 @@ BOOL WindowSystem::createWindow(WindowComponent* window, int bits, bool fullscre
 		DEVMODE dmScreenSettings;
 		memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
 		dmScreenSettings.dmSize = sizeof(dmScreenSettings);
-		dmScreenSettings.dmPelsWidth = window->width;
-		dmScreenSettings.dmPelsHeight = window->height;
+		dmScreenSettings.dmPelsWidth = 1920;//window->width;
+		dmScreenSettings.dmPelsHeight = 1080;//window->height;
 		dmScreenSettings.dmBitsPerPel = bits;
 		dmScreenSettings.dmFields =
 		DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
@@ -172,6 +195,7 @@ BOOL WindowSystem::createWindow(WindowComponent* window, int bits, bool fullscre
 	}
 
 	ShowWindow(window->hWnd, SW_SHOW);
+	ShowCursor(FALSE);
 	SetForegroundWindow(window->hWnd);
 	SetFocus(window->hWnd);
 	resizeWindow(window, window->width, window->height);
@@ -236,11 +260,13 @@ void WindowSystem::resizeWindow(WindowComponent* window, int w, int h) {
 }
 
 BOOL WindowSystem::initializeGL() {
-	g2e::Core::service().add(nullptr);
+//	g2e::Core::service().add(nullptr);
 	return TRUE;
 }
 
 LRESULT CALLBACK WindowSystem::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+	g2e::event::EventService* event = ((g2e::event::EventService*)Core::service().get("EventService"));
+
 	switch (uMsg) {
 	case WM_ACTIVATE: {
 		if (!HIWORD(wParam)) {
@@ -267,12 +293,18 @@ LRESULT CALLBACK WindowSystem::WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 	}
 
 	case WM_KEYDOWN: {
-		std::cout << (char)HIWORD(wParam) << std::endl;
+		if (HIWORD(lParam) < 256) event->fire(new g2e::event::KeyboardEvent(LOWORD(wParam), true));
 		return 0;
 	}
 
 	case WM_KEYUP: {
-		std::cout << (char)HIWORD(wParam) << std::endl;
+		if (LOWORD(wParam) == 27) Core::done(); // escape
+		event->fire(new g2e::event::KeyboardEvent(LOWORD(wParam), false));
+		return 0;
+	}
+
+	case WM_MOUSEMOVE: {
+		event->fire(new g2e::event::MouseEvent(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam)));
 		return 0;
 	}
 

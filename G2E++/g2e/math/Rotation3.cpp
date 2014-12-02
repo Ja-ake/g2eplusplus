@@ -10,13 +10,14 @@
 namespace g2e {
 namespace math {
 
-Rotation3::Rotation3() {
-	// TODO Auto-generated constructor stub
+Rotation3::~Rotation3() { }
 
+const Rotation3 Rotation3::add(Rotation3 other) const {
+	return Rotation3(this->yaw() + other.yaw(), this->pitch() + other.pitch(), this->roll() + other.roll());
 }
 
-Rotation3::~Rotation3() {
-	// TODO Auto-generated destructor stub
+const Rotation3 Rotation3::subtract(Rotation3 other) const {
+	return Rotation3(this->yaw() - other.yaw(), this->pitch() - other.pitch(), this->roll() - other.roll());
 }
 
 } /* namespace math */

@@ -44,7 +44,7 @@ public:
 	const Vector2& operator/(double length) const { assert(length>0); return this->multiply(1/length); }
 
 private:
-	const double x_, y_;
+	double x_, y_;
 };
 
 } /* namespace math */

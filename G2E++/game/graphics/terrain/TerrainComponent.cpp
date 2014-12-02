@@ -1,6 +1,10 @@
 #include "TerrainComponent.h"
 
+#include <iostream>
+
 using g2e::math::Color;
+using std::cout;
+using std::endl;
 
 TerrainComponent::TerrainComponent(int w, int h) : width(w), height(h) {
 	heightmap = new double*[width];

@@ -11,6 +11,8 @@
 #include <string>
 #include <stdexcept>
 
+#define CLASSNAME(name) virtual std::string getClass() { return #name; }
+
 namespace g2e {
 namespace util {
 

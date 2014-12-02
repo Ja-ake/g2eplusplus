@@ -6,7 +6,7 @@
 
 class Window : public g2e::AbstractEntity {
 public:
-	Window(HINSTANCE hi, int w, int h, std::string t, bool f);
+	Window(int w, int h, std::string t, bool f);
 	virtual ~Window();
 	virtual std::string getClass() { return "Window"; }
 

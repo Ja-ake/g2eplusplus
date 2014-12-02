@@ -1,3 +1,11 @@
-To create the world:
-WorldTile: x, y, height, color/texture
-WorldRenderer: Render 1x1 vertical square at x, height, y
+11.27.14
+- rendered a triangle with a shader
+
+11.28.14
+- rendered heightmap as flat white tiles
+
+11.29.14 todo
+- velocity
+- noclip camera
+- figure out a way to make a heightmap render correctly (with
+  horizontal rectangles)

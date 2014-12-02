@@ -2,18 +2,18 @@
 #define PHYSICS_POSITIONCOMPONENT_H_
 
 #include <g2e/core/abstractcomponent.h>
-#include <glm/glm.hpp>
+#include <g2e/math/vector3.h>
 
 class PositionComponent : public g2e::AbstractComponent {
 public:
-	PositionComponent() : PositionComponent(glm::vec3(0.0f, 0.0f, 0.0f)) {}
+	PositionComponent() : PositionComponent(g2e::math::Vector3(0.0f, 0.0f, 0.0f)) {}
 	PositionComponent(double x, double y, double z) :
-		PositionComponent(glm::vec3(x, y, z)) {}
-	PositionComponent(glm::vec3 p) { position = p; }
+		PositionComponent(g2e::math::Vector3(x, y, z)) {}
+	PositionComponent(g2e::math::Vector3 p) { position = p; }
 	virtual ~PositionComponent();
 	virtual std::string getClass() { return "PositionComponent"; }
 
-	glm::vec3 position;
+	g2e::math::Vector3 position;
 };
 
 #endif /* PHYSICS_POSITIONCOMPONENT_H_ */

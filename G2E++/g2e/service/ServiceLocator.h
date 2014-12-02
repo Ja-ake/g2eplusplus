@@ -14,6 +14,7 @@ public:
 	virtual ~ServiceLocator();
 
 	Service* get(std::string);
+	std::vector<g2e::service::Service*>& getAll() { return services; }
 
 //	template <class T>
 //	g2e::service::Service& operator()();

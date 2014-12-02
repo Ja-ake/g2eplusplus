@@ -13,11 +13,21 @@ namespace math {
 
 class Rotation3 {
 public:
-	Rotation3();
-	virtual ~Rotation3();
+	const double yaw() const { return _yaw; }
+	const double pitch() const { return _pitch; }
+	const double roll() const { return _roll; }
 
+	Rotation3() : Rotation3(0.0L, 0.0L, 0.0L) {}
+	Rotation3(double y, double p, double r) : _yaw(y), _pitch(p), _roll(r) {}
+	~Rotation3();
+
+	const Rotation3 add(Rotation3) const;
+	const Rotation3 subtract(Rotation3) const;
+
+	const Rotation3 operator+(Rotation3 other) const { return add(other); }
+	const Rotation3 operator-(Rotation3 other) const { return subtract(other); }
 private:
-	double yaw, pitch, roll;
+	double _yaw, _pitch, _roll;
 };
 
 } /* namespace math */

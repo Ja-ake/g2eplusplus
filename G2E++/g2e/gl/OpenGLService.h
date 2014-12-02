@@ -1,7 +1,7 @@
 #ifndef GL_OPENGLSERVICE_H_
 #define GL_OPENGLSERVICE_H_
 
-#define GLSL(src) "#version 150 core\n" #src
+#define GLSL(src) "#version 330\n" #src
 
 #include <gl3w.h>
 #include <glm/glm.hpp>

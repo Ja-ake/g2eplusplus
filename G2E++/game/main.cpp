@@ -16,6 +16,13 @@
 #include "windows/window.h"
 #include "entities/triangle.h"
 #include "graphics/meshrendersystem.h"
+#include "graphics/terrain/terrainrendersystem.h"
+#include "graphics/terrain/dsterraingenerationsystem.h"
+#include "graphics/terrain/terrain.h"
+#include "graphics/camera/noclipcamerasystem.h"
+#include "graphics/camera/camera.h"
+#include "physics/movement/velocitysystem.h"
+
 #include <g2e/resource/resourceloaderservice.h>
 
 using g2e::Core;
@@ -29,12 +36,23 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
 	Core::addDefaultServices();
 
-	Core::add(new WindowSystem());
-	Core::get("WindowSystem")->add(new Window(nullptr, 1200, 900, "Game", false));
+	Core::add(new VelocitySystem());
 
-	Core::add(new MeshRenderSystem());
-	Core::get("MeshRenderSystem")->add(new Triangle());
-	Core::get("MeshRenderSystem")->add(new Triangle());
+	Core::add(new WindowSystem());
+	Core::get("WindowSystem")->add(new Window(1200, 900, "Game", true));
+
+	Camera* camera = new Camera();
+	Core::add(new NoClipCameraSystem());
+	Core::get("NoClipCameraSystem")->add(camera);
+	Core::get("VelocitySystem")->add(camera);
+
+	Terrain* terrain = new Terrain();
+	Core::add(new TerrainRenderSystem());
+	//Core::add(new DSTerrainGenerationSystem());
+	//Core::get("DSTerrainGenerationSystem")->add(terrain);
+	Core::get("TerrainRenderSystem")->add(terrain);
+
+	SetCursorPos(600, 450);
 
 	Core::run();
 	return 0;

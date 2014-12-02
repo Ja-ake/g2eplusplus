@@ -13,6 +13,8 @@ public:
 
 	Service();
 	virtual ~Service();
+
+	virtual void update() {}
 };
 
 } /* namespace service */

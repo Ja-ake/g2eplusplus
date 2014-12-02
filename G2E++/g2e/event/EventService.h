@@ -21,6 +21,7 @@ public:
 	void add(g2e::event::EventListener*);
 	void remove(g2e::event::EventListener*);
 
+	void fire(g2e::event::Event*);
 private:
 	std::vector<g2e::event::Event*> eventQueue;
 	std::vector<g2e::event::EventListener*> listeners;
