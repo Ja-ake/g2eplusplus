@@ -1,0 +1,14 @@
+11.27.14
+- rendered a triangle with a shader
+
+11.28.14
+- rendered heightmap as flat white tiles
+
+11.29.14
+- velocity
+- no-clip camera
+
+11.30.14
+- fixed no-clip
+
+12.06.14

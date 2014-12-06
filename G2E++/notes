@@ -1,11 +1,10 @@
-11.27.14
-- rendered a triangle with a shader
-
-11.28.14
-- rendered heightmap as flat white tiles
-
-11.29.14 todo
-- velocity
-- noclip camera
-- figure out a way to make a heightmap render correctly (with
-  horizontal rectangles)
+Needed:
+- easy way of adding static objects to a world
+	- eventually add "chunks" of data
+		- drawing speed increase
+		- memory usage optimization
+		- physics is faster
+		- eliminates need for kd-trees (which are hard)
+- dynamic objects
+	- simple objects that exist as a movable entity
+	- skeletons
