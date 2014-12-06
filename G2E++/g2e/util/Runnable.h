@@ -9,6 +9,7 @@
 #define RUNNABLE_H_
 
 namespace g2e {
+namespace util {
 
 class Runnable {
 public:
@@ -17,6 +18,7 @@ public:
 	virtual void run() = 0;
 };
 
+} /* namespace util */
 } /* namespace g2e */
 
 #endif /* RUNNABLE_H_ */

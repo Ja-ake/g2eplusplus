@@ -50,31 +50,31 @@ void NoClipCameraSystem::initialize() {
 }
 
 void NoClipCameraSystem::update(g2e::AbstractEntity* entity) {
-	{
-		POINT mouse;
-		GetCursorPos(&mouse);
-
-		double xoff = (double)mouse.x - 600, yoff = -((double)mouse.y - 450);
-		for (auto i = this->entities.begin(); i!=this->entities.end(); i++) {
-			RotationComponent* rc = (RotationComponent*) ((g2e::AbstractEntity*)*i)->get("RotationComponent");
-			VelocityComponent* vc = (VelocityComponent*) ((g2e::AbstractEntity*)*i)->get("VelocityComponent");
-
-			double xrot = xoff * 0.1f;
-			double yrot = yoff * 0.1f;
-			rc->rotation = rc->rotation + Rotation3(xrot, yrot, 0);
-
-			double speed = vc->velocity.length();
-			vc->velocity = Vector3(
-					cos(rc->rotation.pitch()*TORADIANS)*cos(rc->rotation.yaw()*TORADIANS - PI/2),
-					sin(rc->rotation.pitch()*TORADIANS),
-					cos(rc->rotation.pitch()*TORADIANS)*sin(rc->rotation.yaw()*TORADIANS - PI/2)
-				).withLength(speed);
-		}
-
-		if (mouse.x != 600 || mouse.y != 450) {
-			SetCursorPos(600, 450);
-		}
-	}
+//	{
+//		POINT mouse;
+//		GetCursorPos(&mouse);
+//
+//		double xoff = (double)mouse.x - 600, yoff = -((double)mouse.y - 450);
+//		for (auto i = this->entities.begin(); i!=this->entities.end(); i++) {
+//			RotationComponent* rc = (RotationComponent*) ((g2e::AbstractEntity*)*i)->get("RotationComponent");
+//			VelocityComponent* vc = (VelocityComponent*) ((g2e::AbstractEntity*)*i)->get("VelocityComponent");
+//
+//			double xrot = xoff * 0.1f;
+//			double yrot = yoff * 0.1f;
+//			rc->rotation = rc->rotation + Rotation3(xrot, yrot, 0);
+//
+//			double speed = vc->velocity.length();
+//			vc->velocity = Vector3(
+//					cos(rc->rotation.pitch()*TORADIANS)*cos(rc->rotation.yaw()*TORADIANS - PI/2),
+//					sin(rc->rotation.pitch()*TORADIANS),
+//					cos(rc->rotation.pitch()*TORADIANS)*sin(rc->rotation.yaw()*TORADIANS - PI/2)
+//				).withLength(speed);
+//		}
+//
+//		if (mouse.x != 600 || mouse.y != 450) {
+//			SetCursorPos(600, 450);
+//		}
+//	}
 
 	OpenGLService* opengl = (OpenGLService*) Core::service().get("OpenGLService");
 
@@ -96,38 +96,41 @@ void NoClipCameraSystem::onEvent(g2e::event::Event* event) {
 //	TimeService* time = (TimeService*) Core::service().get("TimeService");
 
 	string classname = event->getClass();
-//	if (classname == "MouseEvent") {
-//		MouseEvent* mouse = (MouseEvent*) event;
-//
-//		double xoff = mouse->x - 592, yoff = -(mouse->y - 420);
-////		if (xoff != 0 || yoff != 0) cout << xoff << " " << yoff << endl;
-//		for (auto i = this->entities.begin(); i!=this->entities.end(); i++) {
-//			RotationComponent* rc = (RotationComponent*) ((g2e::AbstractEntity*)*i)->get("RotationComponent");
-//			VelocityComponent* vc = (VelocityComponent*) ((g2e::AbstractEntity*)*i)->get("VelocityComponent");
-//
-//			double xrot = xoff * 0.1f;
-//			double yrot = yoff * 0.1f;
-//			rc->rotation = rc->rotation + Rotation3(xrot, yrot, 0);
-//
-//			double speed = vc->velocity.length();
-//			vc->velocity = Vector3(
-//					cos(rc->rotation.pitch()*TORADIANS)*cos(rc->rotation.yaw()*TORADIANS - PI/2),
-//					sin(rc->rotation.pitch()*TORADIANS),
-//					cos(rc->rotation.pitch()*TORADIANS)*sin(rc->rotation.yaw()*TORADIANS - PI/2)
-//				).withLength(speed);
-////
-////			cout << rc->rotation.pitch()*TORADIANS/PI << ", " << rc->rotation.yaw()*TORADIANS/PI << endl;
-////			cout << vc->velocity.x() << ", " << vc->velocity.y() << ", " << vc->velocity.z() << endl;
-////			cout << mouse->x - 592 << " " << mouse->y - 420 << endl;
-////			vc->velocity = vc->velocity.withLength(speed);
-//		}
-//
-//		if (mouse->x != 592 || mouse->y != 420) {
-//			SetCursorPos(600, 450);
-//		}
-//
-//		return;
-//	}
+	if (classname == "MouseEvent") {
+		MouseEvent* mouse = (MouseEvent*) event;
+
+		if (mouse->x == 592 && mouse->y == 420) return;
+
+		double xoff = mouse->x - 592, yoff = -(mouse->y - 420);
+		for (auto i = this->entities.begin(); i!=this->entities.end(); i++) {
+			RotationComponent* rc = (RotationComponent*) ((g2e::AbstractEntity*)*i)->get("RotationComponent");
+			VelocityComponent* vc = (VelocityComponent*) ((g2e::AbstractEntity*)*i)->get("VelocityComponent");
+
+			double xrot = xoff * 0.1f;
+			double yrot = yoff * 0.1f;
+			rc->rotation = rc->rotation + Rotation3(xrot, yrot, 0);
+
+			double speed = 10.0f; // remember to change the other
+
+			vc->velocity = Vector3();
+			Vector3 facing = Vector3(
+					cos(rc->rotation.pitch()*TORADIANS)*cos(rc->rotation.yaw()*TORADIANS - PI/2),
+					sin(rc->rotation.pitch()*TORADIANS),
+					cos(rc->rotation.pitch()*TORADIANS)*sin(rc->rotation.yaw()*TORADIANS - PI/2)
+				);
+
+			if (((g2e::AbstractEntity*)*i)->value("shiftpressed")) speed = 30.0f;
+			if (((g2e::AbstractEntity*)*i)->value("wpressed")) vc->velocity = vc->velocity + facing;
+			if (((g2e::AbstractEntity*)*i)->value("spressed")) vc->velocity = vc->velocity + facing.withLength(-1);
+			if (((g2e::AbstractEntity*)*i)->value("apressed")) vc->velocity = vc->velocity + Vector3(facing.z(), 0.0f, -facing.x());
+			if (((g2e::AbstractEntity*)*i)->value("dpressed")) vc->velocity = vc->velocity + Vector3(facing.z(), 0.0f, -facing.x()).withLength(-1);
+
+			if (vc->velocity.length() > 0) vc->velocity = vc->velocity.withLength(speed);
+		}
+
+		SetCursorPos(600, 450);
+		return;
+	}
 
 	if (classname == "KeyboardEvent") {
 		KeyboardEvent* keyboard = (KeyboardEvent*) event;
@@ -135,23 +138,29 @@ void NoClipCameraSystem::onEvent(g2e::event::Event* event) {
 			VelocityComponent* vc = (VelocityComponent*) ((g2e::AbstractEntity*)*i)->get("VelocityComponent");
 			RotationComponent* rc = (RotationComponent*) ((g2e::AbstractEntity*)*i)->get("RotationComponent");
 
-			Vector3 direction;
-			double speed = vc->velocity.length();
+			double speed = 10; // change the other too!
 
-			if (keyboard->key == 'W') direction = Vector3(
+			vc->velocity = Vector3();
+			Vector3 facing = Vector3(
 					cos(rc->rotation.pitch()*TORADIANS)*cos(rc->rotation.yaw()*TORADIANS - PI/2),
 					sin(rc->rotation.pitch()*TORADIANS),
 					cos(rc->rotation.pitch()*TORADIANS)*sin(rc->rotation.yaw()*TORADIANS - PI/2)
 				);
 
-			if (keyboard->key == 'S') direction = Vector3(
-					cos(rc->rotation.pitch()*TORADIANS)*cos(rc->rotation.yaw()*TORADIANS - PI/2),
-					sin(rc->rotation.pitch()*TORADIANS),
-					cos(rc->rotation.pitch()*TORADIANS)*sin(rc->rotation.yaw()*TORADIANS - PI/2)
-				).multiply(-1);
+			if (keyboard->key == VK_SHIFT) ((g2e::AbstractEntity*)*i)->set("shiftpressed", keyboard->pressed);
 
-			vc->velocity = vc->velocity.withLength(speed) + direction.withLength((keyboard->pressed ? 1 : -1) * 75.0f);
-			cout << direction.x() << endl;
+			if (keyboard->key == 'W') ((g2e::AbstractEntity*)*i)->set("wpressed", keyboard->pressed);
+			if (keyboard->key == 'A') ((g2e::AbstractEntity*)*i)->set("apressed", keyboard->pressed);
+			if (keyboard->key == 'S') ((g2e::AbstractEntity*)*i)->set("spressed", keyboard->pressed);
+			if (keyboard->key == 'D') ((g2e::AbstractEntity*)*i)->set("dpressed", keyboard->pressed);
+
+			if (((g2e::AbstractEntity*)*i)->value("shiftpressed")) speed = 30.0f;
+			if (((g2e::AbstractEntity*)*i)->value("wpressed")) vc->velocity = vc->velocity + facing;
+			if (((g2e::AbstractEntity*)*i)->value("spressed")) vc->velocity = vc->velocity + facing.withLength(-1);
+			if (((g2e::AbstractEntity*)*i)->value("apressed")) vc->velocity = vc->velocity + Vector3(facing.z(), 0.0f, -facing.x());
+			if (((g2e::AbstractEntity*)*i)->value("dpressed")) vc->velocity = vc->velocity + Vector3(facing.z(), 0.0f, -facing.x()).withLength(-1);
+
+			if (vc->velocity.length() > 0) vc->velocity = vc->velocity.withLength(speed);
 		}
 	}
 }

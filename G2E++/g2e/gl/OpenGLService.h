@@ -16,6 +16,12 @@ namespace g2e {
 namespace gl {
 
 typedef struct {
+	double* vertex;
+	double* index;
+	double* uv;
+} opengl_mesh;
+
+typedef struct {
 	GLuint vao, vbo;
 } opengl_buffers;
 
@@ -23,9 +29,10 @@ typedef GLuint opengl_program;
 
 class OpenGLService : public g2e::service::Service {
 public:
+	CLASSNAME(OpenGLService)
+
 	OpenGLService();
 	virtual ~OpenGLService();
-	virtual std::string getClass() { return "OpenGLService"; }
 
 	opengl_buffers upload(double* data, int size, GLuint type);
 	void destroy(opengl_buffers& buffers) {} // TODO: implement

@@ -33,6 +33,9 @@ public:
 	AbstractComponent* take(std::string);
 	AbstractComponent* get(std::string);
 
+	void set(std::string, bool value);
+	bool value(std::string);
+
 	/**
 	 * This function is called when an entity is added to a system,
 	 * make sure to call the base function for the entity's memory
@@ -51,12 +54,13 @@ public:
 		addedto--;
 		// TODO: find a better way!
 		try { if (addedto <= 0) delete this/*eek undefined behavior*/; }
-		catch (std::exception&) {}
+		catch (...) {}
 	}
 
 	int systemCount() { return addedto; }
 private:
 	std::map<std::string, AbstractComponent*> components;
+	std::map<std::string, bool> values;
 
 	int addedto = 0;
 };

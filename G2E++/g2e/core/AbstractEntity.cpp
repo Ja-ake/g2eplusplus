@@ -50,4 +50,12 @@ AbstractComponent* AbstractEntity::get(std::string cptname) {
 	return components[cptname];
 }
 
+void AbstractEntity::set(std::string name, bool value) {
+	values[name] = value;
+}
+
+bool AbstractEntity::value(std::string name) {
+	return values[name];
+}
+
 } /* namespace g2e */
